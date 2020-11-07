@@ -16,8 +16,6 @@ import com.behl.app.ws.shared.dto.UserDto;
 @Service
 public class UserServiceImpl implements UserService {
 
-//	private static final String UserEntity = null;
-
 	@Autowired
 	UserRepository userRepository;
 
@@ -27,23 +25,23 @@ public class UserServiceImpl implements UserService {
 //	@Autowired
 //	BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	
 	public UserDto createUser(UserDto user) {
-//		if (userRepository.findByEmail(user.getEmail()) != null)
-//			throw new UserServiceException("Record already exists.");
+		if (userRepository.findByEmail(user.getEmail()) != null) {
+			throw new UserServiceException("Record already exists.");
+		}
 		
 		UserEntity userEntity = new UserEntity();
 		ModelMapper modelMapper = new ModelMapper();
 		userEntity = modelMapper.map(user, UserEntity.class);
 
-		String publicUserId = utils.generateUserId(30);		
+		String publicUserId = utils.generateUserId(30);
 		userEntity.setUserId(publicUserId);
 		userEntity.setEncryptedPassword("test");
 		UserEntity storedUserDetails = userRepository.save(userEntity);
-		
+
 		UserDto returnValue = new UserDto();
 		returnValue = modelMapper.map(storedUserDetails, UserDto.class);
-		
+
 		return returnValue;
 
 	}
@@ -69,7 +67,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleteUser(String userId) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

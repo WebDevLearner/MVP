@@ -29,38 +29,4 @@ public class Utils {
 		return new String(returnValue);
 	}
 
-//	public static boolean hasTokenExpired(String token) {
-//
-//		boolean returnValue = false;
-//
-//		try {
-//
-//			Claims claims = Jwts.parser()
-//					.setSigningKey(SecurityConstants.getTokenSecret())
-//					.parseClaimsJws(token).getBody();
-//
-//			Date tokenExpirationDate = claims.getExpiration();
-//			Date todayDate = new Date();
-//
-//			returnValue = tokenExpirationDate.before(todayDate);
-//			
-//		} catch (ExpiredJwtException ex) {
-//			returnValue = true;
-//		}
-//
-//		return returnValue;
-//	}
-//	
-	
-
-
-//	public String generatePasswordResetToken(String userId) {
-//
-//		String token = Jwts.builder().setSubject(userId)
-//				.setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.PASSWORD_RESET_EXPIRATION_TIME))
-//				.signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret()).compact();
-//
-//		return token;
-//	}
-
 }
