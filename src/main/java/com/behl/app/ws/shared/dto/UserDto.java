@@ -7,6 +7,7 @@ import java.util.List;
 public class UserDto implements Serializable {
 
 	private static final long serialVersionUID = 8954365741074644088L;
+	
 	private long id;
 	private String userId;
 	private String firstName;

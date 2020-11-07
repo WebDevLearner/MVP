@@ -9,6 +9,7 @@ public class LoginRequestModel {
 	@Email
 	private String email;
 	
+	@NotBlank(message = "password cannot be blank.")
 	private String password;
 
 	public String getEmail() {
