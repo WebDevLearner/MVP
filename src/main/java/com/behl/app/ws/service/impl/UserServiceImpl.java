@@ -6,6 +6,9 @@ import java.util.List;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,6 +21,7 @@ import com.behl.app.ws.io.repositories.UserRepository;
 import com.behl.app.ws.service.UserService;
 import com.behl.app.ws.shared.Utils;
 import com.behl.app.ws.shared.dto.UserDto;
+import com.behl.app.ws.ui.model.response.ErrorMessages;
 import com.sun.security.auth.UserPrincipal;
 
 @Service
@@ -67,27 +71,68 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto getUserByUserId(String userId) {
-		// TODO Auto-generated method stub
-		return null;
+		UserDto returnValue = new UserDto();
+		UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if (userEntity == null)
+			throw new UsernameNotFoundException("User with ID: " + userId + " not found.");
+
+		BeanUtils.copyProperties(userEntity, returnValue);
+		return returnValue;
 	}
+
 
 	@Override
 	public UserDto updateUser(String userId, UserDto user) {
-		// TODO Auto-generated method stub
-		return null;
+		UserDto returnValue = new UserDto();
+
+		UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if (userEntity == null)
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+
+		userEntity.setFirstName(user.getFirstName());
+		userEntity.setLastName(user.getLastName());
+
+		UserEntity updatedUserDetails = userRepository.save(userEntity);
+
+		BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+		return returnValue;
 	}
 
 	@Override
 	public void deleteUser(String userId) {
-		// TODO Auto-generated method stub
+		UserEntity userEntity = userRepository.findByUserId(userId);
+
+		if (userEntity == null) {
+			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+		}
+		userRepository.delete(userEntity);
 
 	}
 
 	@Override
 	public List<UserDto> getUsers(int page, int limit) {
-		// TODO Auto-generated method stub
-		return null;
+		List<UserDto> returnValue = new ArrayList<>();
+
+		if (page > 0)
+			page -= 1;
+
+		Pageable pageableRequest = PageRequest.of(page, limit);
+		
+		Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
+		List<UserEntity> users = usersPage.getContent();
+
+		for (UserEntity userEntity : users) {
+			UserDto userDto = new UserDto();
+			BeanUtils.copyProperties(userEntity, userDto);
+			returnValue.add(userDto);
+		}
+		return returnValue;
 	}
+	
+	
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
