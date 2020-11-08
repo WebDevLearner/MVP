@@ -81,7 +81,6 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
-
 	@Override
 	public UserDto updateUser(String userId, UserDto user) {
 		UserDto returnValue = new UserDto();
@@ -116,11 +115,11 @@ public class UserServiceImpl implements UserService {
 	public List<UserDto> getUsers(int page, int limit) {
 		List<UserDto> returnValue = new ArrayList<>();
 
-		if (page > 0)
+		if (page > 0) {
 			page -= 1;
-
+		}
 		Pageable pageableRequest = PageRequest.of(page, limit);
-		
+
 		Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
 		List<UserEntity> users = usersPage.getContent();
 
@@ -131,8 +130,6 @@ public class UserServiceImpl implements UserService {
 		}
 		return returnValue;
 	}
-	
-	
 
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
