@@ -31,12 +31,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		.mvcMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
 		.permitAll()
+		.antMatchers(SecurityConstants.H2_CONSOLE)
+		.permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.addFilter(getAuthenticationFilter())
 		.addFilter(new AuthorizationFilter(authenticationManager()))
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
+		http.headers().frameOptions().disable();	//h2 related change. disable otherwise.
 	}
 	
 	@Override
