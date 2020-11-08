@@ -1,5 +1,7 @@
 # MVP
 
+Docker file: navneetbehl/mvp
+
 Here are some endpoints that you can call:
 
  1. Creating a new resource (you do not need JWT token to create user). 
