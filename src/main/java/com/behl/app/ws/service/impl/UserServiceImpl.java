@@ -1,9 +1,12 @@
 package com.behl.app.ws.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService {
 		if (userRepository.findByEmail(user.getEmail()) != null) {
 			throw new UserServiceException("Record already exists.");
 		}
-		
+
 		UserEntity userEntity = new UserEntity();
 		ModelMapper modelMapper = new ModelMapper();
 		userEntity = modelMapper.map(user, UserEntity.class);
@@ -52,8 +55,14 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto getUser(String email) {
-		// TODO Auto-generated method stub
-		return null;
+		UserEntity userEntity = userRepository.findByEmail(email);
+
+		if (userEntity == null) {
+			throw new UsernameNotFoundException(email);
+		}
+		UserDto returnValue = new UserDto();
+		BeanUtils.copyProperties(userEntity, returnValue);
+		return returnValue;
 	}
 
 	@Override
@@ -84,10 +93,10 @@ public class UserServiceImpl implements UserService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		UserEntity userEntity = userRepository.findByEmail(email);
 
-		if (userEntity == null) throw new UsernameNotFoundException(email);
+		if (userEntity == null)
+			throw new UsernameNotFoundException(email);
 
-
-		return null;
+		return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
 	}
 
 }
