@@ -1,6 +1,6 @@
 # MVP
 
-Docker file: navneetbehl/mvp
+Docker image is uploaded to navneetbehl/mvp
 
 Here are some endpoints that you can call:
 
